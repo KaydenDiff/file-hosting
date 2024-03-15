@@ -2,19 +2,19 @@
   <div class="login-page">
     <form class="login-form" @submit.prevent="login" method="post">
       <header>
-        <h2>Login</h2>
+        <h2>Авторизация</h2>
       </header>
       <div class="form-group">
         <label for="email">Email</label>
         <input type="email" id="email" v-model="email" placeholder="Enter your email" required>
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">Пароль</label>
         <input type="password" id="password" v-model="password" placeholder="Enter your password" required>
       </div>
       <div class="button-group">
         <button type="submit" class="login-button">Login</button>
-        <button type="submit" class="register-button">Registration</button>
+        <router-link to="/registration" class="register-button">Registration</router-link>
       </div>
     </form>
     <div v-if="errorMessage">{{ errorMessage }}</div>
@@ -49,12 +49,12 @@ export default {
         if (response.status === 200 && response.data.token) {
           // Сохраняем токен в localStorage
           localStorage.setItem('token', response.data.token);
-
+          this.$router.push('/user-files');
           // Можно также сохранить другие данные пользователя, если они приходят в ответе
           // localStorage.setItem('user', JSON.stringify(response.data.user));
 
           // Обработка успешного входа, например, перенаправление пользователя
-          console.log('Успешный вход. Токен сохранен в localStorage.');
+
         } else {
           // Обработка случаев, когда токен не был получен
           console.error('Ошибка входа: Не удалось получить токен.');
@@ -128,6 +128,24 @@ button {
 }
 
 button:hover {
+  background-color: #ff6b7a;
+}
+.register-button {
+  display: inline-block;
+  width: calc(50% - 5px);
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f3a0ae;
+  color: #fff;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+/* Добавляем стили при наведении */
+.register-button:hover {
   background-color: #ff6b7a;
 }
 </style>

@@ -1,4 +1,7 @@
 <template>
+  <nav>
+
+  </nav>
   <div>
     <h1>Upload Files Page</h1>
     <!-- Форма для загрузки файлов -->

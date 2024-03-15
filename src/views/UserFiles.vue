@@ -1,19 +1,116 @@
 <template>
-  <div>
-    <h1>User Files Page</h1>
-    <!-- Список файлов пользователя -->
-  </div>
+ <home-view>
+   <div class="user-file-page">
+     <h2>Ваши файлы</h2>
+     <div class="file-list">
+       <div v-for="file in files" :key="file.id" class="file-item">
+         <span>{{ file.name }}</span>
+         <button @click="downloadFile(file.file_id,file.name)">Скачивание</button>
+         <button @click="downloadFile(file.id)">Редактирование</button>
+         <button @click="downloadFile(file.id)">Удаление</button>
+         <button @click="downloadFile(file.id)">Он получил власть, которая и не снилась его отцу</button>
+       </div>
+     </div>
+   </div>
+ </home-view>
 </template>
 
 <script>
+import axios from 'axios';
+import router from '@/router'; // Предполагается, что у вас есть настройки маршрутизации и объект router доступен
+import HomeView from "@/views/HomeView.vue";
 export default {
-  name: 'UserFiles'
-}
+  components: {HomeView},
+  data() {
+    return {
+      files: [],
+    };
+  },
+  mounted() {
+    this.fetchFiles();
+  },
+  methods: {
+    async fetchFiles() {
+      try {
+        const response = await axios.get('http://file-hosting.ru/api-file/file/disk', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        this.files = response.data;
+      } catch (error) {
+        // Если ошибка авторизации (например, статус 401), перенаправляем пользователя на страницу логина
+        if (error.response && error.response.status === 401) {
+          router.push('/login'); // Здесь '/login' - путь к вашей странице входа
+        } else {
+          router.push('/login');
+          console.error('Ошибка при получении файлов:', error);
+        }
+      }
+    },
+    async downloadFile(fileId, fileName) {
+      try {
+        // Выполняем GET-запрос для скачивания файла
+        const response = await axios.get(`http://file-hosting.ru/api-file/files/${fileId}`, {
+          responseType: 'blob', headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          }, // Указываем, что ожидаемый тип данных - бинарные данные (файл)
+        });
+
+        // Создаем URL для скачивания файла
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+
+        // Создаем ссылку для скачивания файла
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName); // Указываем имя файла
+        document.body.appendChild(link);
+
+        // Начинаем скачивание файла
+        link.click();
+
+        // Очищаем ссылку после скачивания
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Ошибка при скачивании файла:', error);
+      }
+    }
+  },
+};
 </script>
 
 <style scoped>
-h1, h2, h3, h4, h5, h6 {
-  color: black; /* черный цвет текста */
-  font-size: 30px; /* размер шрифта 30px */
+.user-file-page {
+  padding: 20px;
+  background-color: #6b2737; /* фиолетовый цвет */
+  color: #fff; /* белый цвет текста */
+  height: 100vh;
 }
+
+h2 {
+  color: White; /* красный цвет */
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.file-list {
+  margin-top: 20px;
+}
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+  background-color: #944153; /* темно-красный цвет */
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.file-item span {
+  flex: 1;
+}
+
+
 </style>
