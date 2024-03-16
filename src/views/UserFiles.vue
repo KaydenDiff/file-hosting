@@ -11,7 +11,7 @@
          <div>
            <!-- Используем router-link для перенаправления на страницу "/user-files" -->
            <router-link :to="`/file-permissions/${file.file_id}/accesses`" class="button-link">
-             Он получил власть, которая и не снилась его отцу
+             Поделиться доступом
            </router-link>
          </div>
        </div>

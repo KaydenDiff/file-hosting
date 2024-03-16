@@ -10,7 +10,7 @@
 
         <li><router-link to="/user-files">Мои файлы</router-link></li>
         <li><router-link to="/upload-files">Добавление файлов</router-link></li>
-        <li><router-link to="/shared-files">Я получил доступ к файлам, в другом мире</router-link></li>
+        <li><router-link to="/shared-files">Файлы с доступом</router-link></li>
         <li><button @click="clearToken">Выход</button></li>
       </ul>
     </nav>
