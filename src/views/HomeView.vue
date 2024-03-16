@@ -1,5 +1,6 @@
 
 <template>
+  <body>
   <header class="app-header">
     <div class="logo">
 
@@ -15,11 +16,14 @@
     </nav>
   </header>
   <main>
-  <slot>
+    <slot>
 
-  </slot>
+    </slot>
   </main>
+  </body>
+
 </template>
+
 <script>
 import axios from 'axios';
 import { useRouter } from 'vue-router';
@@ -48,6 +52,7 @@ export default {
 }
 </script>
 <style scoped type="text/scss">
+
 .app-header {
   display: flex;
   justify-content: space-between;

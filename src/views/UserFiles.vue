@@ -5,10 +5,15 @@
      <div class="file-list">
        <div v-for="file in files" :key="file.id" class="file-item">
          <span>{{ file.name }}</span>
-         <button @click="downloadFile(file.file_id,file.name)">Скачивание</button>
-         <button @click="downloadFile(file.id)">Редактирование</button>
-         <button @click="downloadFile(file.id)">Удаление</button>
-         <button @click="downloadFile(file.id)">Он получил власть, которая и не снилась его отцу</button>
+         <button type="button" @click="downloadFile(file.file_id,file.name)">Скачивание</button>
+         <button @click="editFile(file.file_id)">Редактирование</button>
+         <button @click="deleteFile(file.file_id)">Удаление</button>
+         <div>
+           <!-- Используем router-link для перенаправления на страницу "/user-files" -->
+           <router-link :to="`/file-permissions/${file.file_id}/accesses`" class="button-link">
+             Он получил власть, которая и не снилась его отцу
+           </router-link>
+         </div>
        </div>
      </div>
    </div>
@@ -28,6 +33,11 @@ export default {
   },
   mounted() {
     this.fetchFiles();
+  },
+  created() {
+    // Установить fileId при создании компонента, например, из маршрута или props
+    this.fileId = this.$route.params.fileId; // Пример получения fileId из маршрута
+
   },
   methods: {
     async fetchFiles() {
@@ -50,6 +60,7 @@ export default {
     },
     async downloadFile(fileId, fileName) {
       try {
+
         // Выполняем GET-запрос для скачивания файла
         const response = await axios.get(`http://file-hosting.ru/api-file/files/${fileId}`, {
           responseType: 'blob', headers: {
@@ -74,7 +85,24 @@ export default {
       } catch (error) {
         console.error('Ошибка при скачивании файла:', error);
       }
-    }
+    },
+    async deleteFile(fileId) {
+      try {
+        await axios.delete(`http://file-hosting.ru/api-file/files/${fileId}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        // После успешного удаления файла обновляем список файлов
+        this.fetchFiles();
+      } catch (error) {
+        console.error('Ошибка при удалении файла:', error);
+      }
+    },
+    editFile(fileId) {
+      this.$router.push({ name: 'EditFile', params: { id: fileId } });
+    },
+
   },
 };
 </script>
@@ -84,7 +112,7 @@ export default {
   padding: 20px;
   background-color: #6b2737; /* фиолетовый цвет */
   color: #fff; /* белый цвет текста */
-  height: 100vh;
+  height: 90vh;
 }
 
 h2 {
@@ -111,6 +139,22 @@ h2 {
 .file-item span {
   flex: 1;
 }
+.button-link {
+  display: inline-block;
+  padding: 10px;
+  background-color: #f3a0ae;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 
+}
+
+/* Применяем стили при наведении курсора */
+.button-link:hover {
+  background-color: #ff6b7a;
+}
 
 </style>

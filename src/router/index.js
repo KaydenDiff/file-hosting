@@ -13,8 +13,11 @@ const routes = [
   { path: '/login', component: Login },
   { path: '/user-files', component: UserFiles },
   { path: '/shared-files', component: SharedFiles },
-  { path: '/edit-file/:id', component: EditFile, props: true },
-  { path: '/file-permissions/:id', component: FilePermissions, props: true },
+  { path: '/edit-file/:id',name: 'EditFile', component: EditFile, props: true },
+  {
+    path: '/file-permissions/:fileId/accesses',
+    component: FilePermissions
+  },
   { path: '/upload-files', component: UploadFiles },
   { path: '/', redirect: '/user-files' } // Добавляем этот роут для перенаправления на /login
 
